@@ -67,3 +67,44 @@ Terraform wrote configs to local files:
 export KUBECONFIG=~/sfs-assessment/terraform/kubeconfig
 export TALOSCONFIG=~/sfs-assessment/terraform/talosconfig
 
+**3.3 Verification**
+# Talos cluster members (etcd on control planes)
+talosctl get member
+
+# Kubernetes nodes
+kubectl get nodes -o wide
+kubectl get pods -A
+4. GitOps Bootstrap (FluxCD)
+Flux was bootstrapped against the GitHub repository:
+
+flux bootstrap github \
+  --owner=kalyani-wagadari \
+  --repository=talos-gitops \
+  --branch=main \
+  --path=clusters/production \
+  --personal
+``
+Verification:
+
+flux get kustomizations -A
+kubectl -n flux-system get pods
+5. Cloudflare Tunnel Ingress Controller:
+
+helm repo add strrl.dev https://helm.strrl.dev
+helm repo update
+
+helm upgrade --install --wait \
+  cloudflare-tunnel-ingress-controller \
+  strrl.dev/cloudflare-tunnel-ingress-controller \
+  --namespace cloudflare-tunnel-ingress-controller --create-namespace \
+  --set cloudflare.apiToken="<CLOUDFLARE_API_TOKEN>" \
+  --set cloudflare.accountId="<CLOUDFLARE_ACCOUNT_ID>" \
+  --set cloudflare.tunnelName="kalyani-tunnel"
+
+Verification:
+kubectl get pods -n cloudflare-tunnel-ingress-controller
+6. Application Manifests (GitOps)
+Folder: clusters/production/kalyani-demo/
+6.1 Namespace
+
+
