@@ -107,4 +107,96 @@ kubectl get pods -n cloudflare-tunnel-ingress-controller
 Folder: clusters/production/kalyani-demo/
 6.1 Namespace
 
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kalyani
+
+6.2 Deployment (EchoServer):
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo
+  namespace: kalyani
+spec:
+  replicas: 5   # scaled to 5 to demonstrate horizontal scaling
+  selector:
+    matchLabels:
+      app: echo
+  template:
+    metadata:
+      labels:
+        app: echo
+    spec:
+      containers:
+      - name: echoserver
+        image: gcr.io/google_containers/echoserver:1.10
+        ports:
+        - containerPort: 8080
+6.3 Service
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo
+  namespace: kalyani
+spec:
+  selector:
+    app: echo
+  ports:
+  - port: 80
+    targetPort: 8080
+6.4 Ingress (Cloudflare Tunnel)
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echo
+  namespace: kalyani
+spec:
+  ingressClassName: cloudflare-tunnel
+  rules:
+  - host: kalyani.sfslab.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: echo
+            port:
+              number: 80
+6.5 Local Kustomization
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+6.6 Flux Kustomization CR
+File: clusters/production/kalyani-demo-kustomization.yaml
+
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: kalyani-demo
+  namespace: flux-system
+spec:
+  interval: 1m
+  path: ./clusters/production/kalyani-demo
+  prune: true
+  wait: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+Apply via commit & push, then:
+
+flux reconcile kustomization flux-system --with-source
+kubectl -n kalyani get deploy,svc,ingress
+
+
 
