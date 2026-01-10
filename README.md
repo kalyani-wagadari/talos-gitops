@@ -239,3 +239,6 @@ kubectl -n kalyani get deploy,svc,ingress
 <img width="1483" height="199" alt="image" src="https://github.com/user-attachments/assets/221555ee-3494-4bc6-af4e-caa9662cb2c2" />
 
 
+## Troubleshooting Notes
+-> CPX21 unavailable in hel1 → switched to CPX22
+-> Talos bootstrap delay (nodes were NotReady for ~10 minutes)
