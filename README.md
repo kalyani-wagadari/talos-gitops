@@ -62,9 +62,10 @@ talos-gitops/
 ### 3.2 Outputs
 
 Terraform wrote configs to local files:
-export KUBECONFIG=~/sfs-assessment/terraform/kubeconfig
-export TALOSCONFIG=~/sfs-assessment/terraform/talosconfig
-
+```yaml
+export KUBECONFIG= ~/sfs-assessment/terraform/kubeconfig
+export TALOSCONFIG= ~/sfs-assessment/terraform/talosconfig
+```
 ### 3.3 Verification
 
  Talos cluster members (etcd on control planes)
