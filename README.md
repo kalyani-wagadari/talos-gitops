@@ -35,7 +35,6 @@ talos-gitops/
 
 - `clusters/production/kalyani-demo/` → App manifests and a local `kustomization.yaml`
 - `clusters/production/kalyani-demo-kustomization.yaml` → Flux Kustomization CR pointing to the demo folder
-- `screenshots/` → Evidence organized per task (Terraform, cluster, Flux, Cloudflare, app, scaling)
 
 ---
 
