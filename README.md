@@ -70,10 +70,14 @@ export TALOSCONFIG= ~/sfs-assessment/terraform/talosconfig
 
  Talos cluster members (etcd on control planes)
  talosctl get member
+<img width="1550" height="245" alt="image" src="https://github.com/user-attachments/assets/e5b57db9-d163-4e6b-a803-62bbe86a6a52" />
 
  Kubernetes nodes
  kubectl get nodes -o wide
+ <img width="1550" height="175" alt="image" src="https://github.com/user-attachments/assets/203517ae-3142-4c66-b717-393c94f9494a" />
+
  kubectl get pods -A
+<img width="1361" height="818" alt="image" src="https://github.com/user-attachments/assets/989b087a-efeb-4892-b423-f8b163bac611" />
 
 ## 4. GitOps Bootstrap (FluxCD)
 
@@ -90,6 +94,8 @@ Verification:
 
 flux get kustomizations -A
 kubectl -n flux-system get pods
+<img width="1183" height="221" alt="image" src="https://github.com/user-attachments/assets/4f4ee309-0d00-47eb-96be-97c2ae88092d" />
+
 
 ## 5. Cloudflare Tunnel Ingress Controller:
 
@@ -106,6 +112,7 @@ helm upgrade --install --wait \
 
 Verification:
 kubectl get pods -n cloudflare-tunnel-ingress-controller
+<img width="914" height="101" alt="image" src="https://github.com/user-attachments/assets/0e66d766-1a46-4cfd-a9db-39b3e9cd51f4" />
 
 ## 6. Application Manifests 
 Folder: clusters/production/kalyani-demo/
@@ -213,9 +220,10 @@ spec:
  ```       
 Apply via commit & push, then:
 
-flux reconcile kustomization flux-system --with-source
+flux reconcile kustomization flux-system --with-source (It gets the latest GitHub changes and apply them to the cluster )
 
 kubectl -n kalyani get deploy,svc,ingress
 
+<img width="1483" height="199" alt="image" src="https://github.com/user-attachments/assets/221555ee-3494-4bc6-af4e-caa9662cb2c2" />
 
 
