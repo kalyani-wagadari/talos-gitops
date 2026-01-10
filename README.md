@@ -68,15 +68,15 @@ export TALOSCONFIG=~/sfs-assessment/terraform/talosconfig
 ### 3.3 Verification
 
  Talos cluster members (etcd on control planes)
-talosctl get member
+ talosctl get member
 
  Kubernetes nodes
-kubectl get nodes -o wide
-kubectl get pods -A
+ kubectl get nodes -o wide
+ kubectl get pods -A
 
 ## 4. GitOps Bootstrap (FluxCD)
 
- Flux was bootstrapped against the GitHub repository:
+Flux was bootstrapped against the GitHub repository:
 
 flux bootstrap github \
   --owner=kalyani-wagadari \
@@ -85,7 +85,7 @@ flux bootstrap github \
   --path=clusters/production \
   --personal
 
- Verification:
+Verification:
 
 flux get kustomizations -A
 kubectl -n flux-system get pods
@@ -103,7 +103,7 @@ helm upgrade --install --wait \
   --set cloudflare.accountId="<CLOUDFLARE_ACCOUNT_ID>" \
   --set cloudflare.tunnelName="kalyani-tunnel"
 
- Verification:
+Verification:
 kubectl get pods -n cloudflare-tunnel-ingress-controller
 
 ## 6. Application Manifests 
@@ -111,10 +111,12 @@ Folder: clusters/production/kalyani-demo/
 
 ### 6.1 Namespace
 
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: kalyani
+ ```yaml
+       apiVersion: v1
+       kind: Namespace
+       metadata:
+         name: kalyani
+       ```
 
 ### 6.2 Deployment (EchoServer Application):
 
