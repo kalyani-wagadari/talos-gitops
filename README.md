@@ -36,6 +36,26 @@ talos-gitops/
 - `clusters/production/kalyani-demo/` → App manifests and a local `kustomization.yaml`
 - `clusters/production/kalyani-demo-kustomization.yaml` → Flux Kustomization CR pointing to the demo folder
 
+Flow :
+GitHub Repo (manifests)
+        │
+        ▼
+   FluxCD (GitOps)
+        │
+        ▼
+Talos Kubernetes Cluster (Hetzner hel1)
+  ├── 3 × CPX22 Control Plane
+  └── 1 × CPX22 Worker
+        │
+        ▼
+Cloudflare Tunnel Ingress Controller
+        │  (Tunnel + DNS automation)
+        ▼
+https://kalyani.sfslab.cloud
+        │
+        ▼
+EchoServer Application (5 replicas)
+
 ---
 
 ## 3. Provisioning (Terraform)
