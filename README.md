@@ -240,8 +240,45 @@ kubectl -n kalyani get deploy,svc,ingress
 
 
 ## Troubleshooting Notes
--> CPX21 unavailable in hel1 → switched to CPX22
--> Talos bootstrap delay (nodes were NotReady for ~10 minutes)
+CPX21 unavailable in hel1 → switched to CPX22
+Talos bootstrap delay (nodes were NotReady for ~10 minutes)
+Unable to Log In to Initial Hetzner VM - When I created the temporary VM in Hetzner Cloud (required for initial familiarization), the console asked for a password.
+Since this was an assessment-provided Hetzner project, I did not know the root password and therefore could not log in.
+ Solution: Boot Into Hetzner Rescue Mode
+Using the Hetzner Cloud Console:
+
+mount /dev/sda1 /mnt
+chroot /mnt
+Reset the root password
+passwd root
+Exited chroot and rebooted:
+exit
+reboot
+After this, I could access the server using the new root password.
+After logging in, I created my own user so I did not need to work as root.
+Commands used:
+
+# Create user
+useradd -m kalyani
+
+# Set password
+passwd kalyani
+
+# Add user to sudo group (Ubuntu/Debian default)
+usermod -aG sudo kalyani
+
+# Switch to the new user
+su - kalyani
+
+# Verify groups
+groups kalyani
+
+
+
+Enabled Rescue Mode.
+Rebooted the server.
+Switched to Rescue OS console and mounted the actual server disk:
+
 
 ## Decisions Made
 Why CPX22: CPX21 unavailable in hel1
