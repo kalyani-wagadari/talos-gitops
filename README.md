@@ -62,20 +62,21 @@ talos-gitops/
 ### 3.2 Outputs
 
 Terraform wrote configs to local files:
-
-```bash
 export KUBECONFIG=~/sfs-assessment/terraform/kubeconfig
 export TALOSCONFIG=~/sfs-assessment/terraform/talosconfig
 
 ### 3.3 Verification
+
 # Talos cluster members (etcd on control planes)
 talosctl get member
 
 # Kubernetes nodes
 kubectl get nodes -o wide
 kubectl get pods -A
-4. GitOps Bootstrap (FluxCD)
-Flux was bootstrapped against the GitHub repository:
+
+## 4. GitOps Bootstrap (FluxCD)
+
+# Flux was bootstrapped against the GitHub repository:
 
 flux bootstrap github \
   --owner=kalyani-wagadari \
@@ -83,12 +84,13 @@ flux bootstrap github \
   --branch=main \
   --path=clusters/production \
   --personal
-``
-Verification:
+
+# Verification:
 
 flux get kustomizations -A
 kubectl -n flux-system get pods
-5. Cloudflare Tunnel Ingress Controller:
+
+## 5. Cloudflare Tunnel Ingress Controller:
 
 helm repo add strrl.dev https://helm.strrl.dev
 helm repo update
@@ -101,18 +103,20 @@ helm upgrade --install --wait \
   --set cloudflare.accountId="<CLOUDFLARE_ACCOUNT_ID>" \
   --set cloudflare.tunnelName="kalyani-tunnel"
 
-Verification:
+# Verification:
 kubectl get pods -n cloudflare-tunnel-ingress-controller
-6. Application Manifests (GitOps)
+
+## 6. Application Manifests 
 Folder: clusters/production/kalyani-demo/
-6.1 Namespace
+
+### 6.1 Namespace
 
 apiVersion: v1
 kind: Namespace
 metadata:
   name: kalyani
 
-6.2 Deployment (EchoServer):
+### 6.2 Deployment (EchoServer Application):
 
 apiVersion: apps/v1
 kind: Deployment
@@ -134,7 +138,8 @@ spec:
         image: gcr.io/google_containers/echoserver:1.10
         ports:
         - containerPort: 8080
-6.3 Service
+        
+### 6.3 Service
 
 apiVersion: v1
 kind: Service
@@ -147,7 +152,8 @@ spec:
   ports:
   - port: 80
     targetPort: 8080
-6.4 Ingress (Cloudflare Tunnel)
+    
+### 6.4 Ingress (Cloudflare Tunnel)
 
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -167,7 +173,8 @@ spec:
             name: echo
             port:
               number: 80
-6.5 Local Kustomization
+        
+### 6.5 Local Kustomization
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
@@ -176,7 +183,8 @@ resources:
   - deployment.yaml
   - service.yaml
   - ingress.yaml
-6.6 Flux Kustomization CR
+    
+### 6.6 Flux Kustomization 
 File: clusters/production/kalyani-demo-kustomization.yaml
 
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -193,9 +201,11 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+    
 Apply via commit & push, then:
 
 flux reconcile kustomization flux-system --with-source
+
 kubectl -n kalyani get deploy,svc,ingress
 
 
