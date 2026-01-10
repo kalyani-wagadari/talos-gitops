@@ -242,3 +242,9 @@ kubectl -n kalyani get deploy,svc,ingress
 ## Troubleshooting Notes
 -> CPX21 unavailable in hel1 → switched to CPX22
 -> Talos bootstrap delay (nodes were NotReady for ~10 minutes)
+
+## Decisions Made
+Why CPX22: CPX21 unavailable in hel1
+Why Echo server: lightweight, stateless, easy to scale
+Why Cloudflare Tunnel: no need for LB or public IP, simple DNS
+Why GitOps (Flux): declarative mgmt, reproducibility
