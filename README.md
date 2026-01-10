@@ -32,13 +32,6 @@ talos-gitops/
 │     │  ├─ ingress.yaml
 │     │  └─ kustomization.yaml
 │     └─ kalyani-demo-kustomization.yaml
-└─ screenshots/
-├─ terraform/
-├─ cluster/
-├─ flux/
-├─ cloudflare/
-├─ app/
-└─ scaling/
 
 - `clusters/production/kalyani-demo/` → App manifests and a local `kustomization.yaml`
 - `clusters/production/kalyani-demo-kustomization.yaml` → Flux Kustomization CR pointing to the demo folder
