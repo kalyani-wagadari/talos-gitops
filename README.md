@@ -111,15 +111,18 @@ Folder: clusters/production/kalyani-demo/
 
 ### 6.1 Namespace
 
- ```yaml
-       apiVersion: v1
-       kind: Namespace
-       metadata:
-         name: kalyani
-       ```
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kalyani
+```
+
 
 ### 6.2 Deployment (EchoServer Application):
 
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -140,9 +143,11 @@ spec:
         image: gcr.io/google_containers/echoserver:1.10
         ports:
         - containerPort: 8080
+```
         
 ### 6.3 Service
 
+```yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -154,9 +159,10 @@ spec:
   ports:
   - port: 80
     targetPort: 8080
-    
+```    
 ### 6.4 Ingress (Cloudflare Tunnel)
 
+```yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -175,9 +181,9 @@ spec:
             name: echo
             port:
               number: 80
-        
+ ```          
 ### 6.5 Local Kustomization
-
+```yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
@@ -185,10 +191,10 @@ resources:
   - deployment.yaml
   - service.yaml
   - ingress.yaml
-    
+ ```       
 ### 6.6 Flux Kustomization 
 File: clusters/production/kalyani-demo-kustomization.yaml
-
+```yaml
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -203,7 +209,7 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-    
+ ```       
 Apply via commit & push, then:
 
 flux reconcile kustomization flux-system --with-source
