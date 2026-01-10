@@ -248,3 +248,23 @@ Why CPX22: CPX21 unavailable in hel1
 Why Echo server: lightweight, stateless, easy to scale
 Why Cloudflare Tunnel: no need for LB or public IP, simple DNS
 Why GitOps (Flux): declarative mgmt, reproducibility
+
+## Secrets & GitOps Consideration
+The assessment requires following GitOps principles:
+
+“Use GitOps Paradigm: do not create resources manually on the Kubernetes cluster.”
+
+However, it also states:
+
+“You may store secrets in plaintext for this assessment.
+Secret encryption is NOT required and would exceed the scope.
+Using external secret managers is not required.”
+
+Because this repository is public, storing sensitive data such as:
+
+Cloudflare API Token
+Cloudflare Account ID
+
+inside Git (even base64) would be unsafe.
+For this reason:
+✔ I installed the Cloudflare Tunnel Ingress Controller manually using Helm,because it requires sensitive values (cloudflare.apiToken, accountId) that must not be pushed to Git.
