@@ -126,7 +126,7 @@ Verification:
 kubectl get pods -n cloudflare-tunnel-ingress-controller
 <img width="914" height="101" alt="image" src="https://github.com/user-attachments/assets/0e66d766-1a46-4cfd-a9db-39b3e9cd51f4" />
 
-### Why Cloudflare Controller Was Installed Manually (Not GitOps):
+### 5.1. Why Cloudflare Controller Was Installed Manually (Not GitOps):
 The Cloudflare Tunnel Ingress Controller requires:
 Cloudflare API token
 Cloudflare Account ID
@@ -245,16 +245,16 @@ kubectl -n kalyani get deploy,svc,ingress
 
 <img width="1483" height="199" alt="image" src="https://github.com/user-attachments/assets/221555ee-3494-4bc6-af4e-caa9662cb2c2" />
 
-## Horizontal Scaling Test
+### Horizontal Scaling Test
 I increased replicas from 1 → 5 in the Deployment manifest.
 Flux applied it automatically and Kubernetes distributed pods across nodes.
 
-## Troubleshooting Notes
+## 7. Troubleshooting Notes
 CPX21 unavailable in hel1 → switched to CPX22
 Talos bootstrap delay (nodes were NotReady for ~10 minutes)
 Unable to Log In to Initial Hetzner VM - When I created the temporary VM in Hetzner Cloud (required for initial familiarization), the console asked for a password.
 Since this was an assessment-provided Hetzner project, I did not know the root password and therefore could not log in.
- Solution: Boot Into Hetzner Rescue Mode
+ **Solution:** Boot Into Hetzner Rescue Mode
 Using the Hetzner Cloud Console:
 
 mount /dev/sda1 /mnt
@@ -292,3 +292,16 @@ Why CPX22: CPX21 unavailable in hel1
 Why Echo server: lightweight, stateless, easy to scale
 Why Cloudflare Tunnel: no need for LB or public IP, simple DNS
 Why GitOps (Flux): declarative mgmt, reproducibility
+
+## 8. What I Learned:
+How Talos bootstraps etcd and why control plane nodes take 8–10 minutes to stabilize
+How Flux GitRepository + Kustomization interact during reconciliation
+How Cloudflare Tunnel simplifies exposure without public IP / LB
+How Terraform handles Talos machine config generation
+Troubleshooting Hetzner VMs and recovery mode
+Importance of separating concerns: GitOps for workloads, Helm for sensitive infra
+
+## 9. What I Would Improve Next
+
+Automate Cloudflare secret injection using Sealed Secrets or SOPS (production scenario)
+Add monitoring stack (Prometheus + Grafana)
