@@ -22,12 +22,12 @@ Key outcomes:
 
 ## 2. Repository Layout
 
-
 talos-gitops/
 └── clusters/
     └── production/
         ├── kalyani-demo/
         │   ├── namespace.yaml
+        │   ├── pvc.yaml
         │   ├── deployment.yaml
         │   ├── service.yaml
         │   ├── ingress.yaml
@@ -166,7 +166,7 @@ metadata:
   name: echo
   namespace: kalyani
 spec:
-  replicas: 5   # scaled to 5 to demonstrate horizontal scaling
+  replicas: 5
   selector:
     matchLabels:
       app: echo
@@ -177,12 +177,40 @@ spec:
     spec:
       containers:
       - name: echoserver
-        image: gcr.io/google_containers/echoserver:1.10
+        image: registry.k8s.io/e2e-test-images/echoserver:2.5
         ports:
         - containerPort: 8080
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+        volumeMounts:               
+        - name: echo-storage
+          mountPath: /data          
+      volumes:                      
+      - name: echo-storage
+        persistentVolumeClaim:
+          claimName: echo-data    
 ```
-        
-### 6.3 Service
+### 6.3 PVC
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: echo-data
+  namespace: kalyani
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: hcloud-volumes-encrypted
+```   
+### 6.4 Service
 
 ```yaml
 apiVersion: v1
@@ -197,7 +225,7 @@ spec:
   - port: 80
     targetPort: 8080
 ```    
-### 6.4 Ingress (Cloudflare Tunnel)
+### 6.5 Ingress (Cloudflare Tunnel)
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -219,7 +247,7 @@ spec:
             port:
               number: 80
  ```          
-### 6.5 Local Kustomization
+### 6.6 Local Kustomization
 ```yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
@@ -229,7 +257,7 @@ resources:
   - service.yaml
   - ingress.yaml
  ```       
-### 6.6 Flux Kustomization 
+### 6.7 Flux Kustomization 
 File: clusters/production/kalyani-demo-kustomization.yaml
 ```yaml
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -254,6 +282,16 @@ flux reconcile kustomization flux-system --with-source (It gets the latest GitHu
 kubectl -n kalyani get deploy,svc,ingress
 
 <img width="1483" height="199" alt="image" src="https://github.com/user-attachments/assets/221555ee-3494-4bc6-af4e-caa9662cb2c2" />
+
+### PVC Working Test
+I Created /data/test.txt inside app pod , restarted it and read it from new pod 
+<img width="1543" height="326" alt="image" src="https://github.com/user-attachments/assets/63b87be8-39a0-4a55-90d1-c2d4b6faf9f9" />
+
+<img width="1501" height="204" alt="image" src="https://github.com/user-attachments/assets/bd3bba92-99b2-43c7-8b14-187146fb7997" />
+
+<img width="1548" height="413" alt="image" src="https://github.com/user-attachments/assets/c106a46c-aea6-40d6-ab41-a6bb36a0ac8c" />
+
+<img width="1524" height="221" alt="image" src="https://github.com/user-attachments/assets/2f145054-dbfb-4c5c-8609-a9df73fa3608" />
 
 ### Horizontal Scaling Test
 I increased replicas from 1 → 5 in the Deployment manifest.
