@@ -69,7 +69,7 @@ EchoServer Application (5 replicas)
   - Control planes: 3 × CPX22in `hel1`
   - Worker: 1 × CPX22 in `hel1`
 
-> Note: CPX21 was unavailable in `hel1`; switching to CPX22 ensured provisioning success.
+> Note: CPX21 capacity in hel1 caused a Terraform provisioning failure (server_type not available). I switched to CPX22, which solved provisioning.
 
 ### 3.2 Outputs
 
@@ -125,6 +125,13 @@ helm upgrade --install --wait \
 Verification:
 kubectl get pods -n cloudflare-tunnel-ingress-controller
 <img width="914" height="101" alt="image" src="https://github.com/user-attachments/assets/0e66d766-1a46-4cfd-a9db-39b3e9cd51f4" />
+
+### Why Cloudflare Controller Was Installed Manually (Not GitOps):
+The Cloudflare Tunnel Ingress Controller requires:
+Cloudflare API token
+Cloudflare Account ID
+The assessment explicitly allows plaintext secrets, but my GitHub repository is public.
+To avoid exposing secrets publicly, I installed the controller via Helm manually.
 
 ## 6. Application Manifests 
 Folder: clusters/production/kalyani-demo/
@@ -238,6 +245,9 @@ kubectl -n kalyani get deploy,svc,ingress
 
 <img width="1483" height="199" alt="image" src="https://github.com/user-attachments/assets/221555ee-3494-4bc6-af4e-caa9662cb2c2" />
 
+## Horizontal Scaling Test
+I increased replicas from 1 → 5 in the Deployment manifest.
+Flux applied it automatically and Kubernetes distributed pods across nodes.
 
 ## Troubleshooting Notes
 CPX21 unavailable in hel1 → switched to CPX22
@@ -258,50 +268,27 @@ After this, I could access the server using the new root password.
 After logging in, I created my own user so I did not need to work as root.
 Commands used:
 
-# Create user
+### Create user
 useradd -m kalyani
 
-# Set password
+### Set password
 passwd kalyani
 
-# Add user to sudo group (Ubuntu/Debian default)
+### Add user to sudo group (Ubuntu/Debian default)
 usermod -aG sudo kalyani
 
-# Switch to the new user
+### Switch to the new user
 su - kalyani
 
-# Verify groups
+### Verify groups
 groups kalyani
-
-
 
 Enabled Rescue Mode.
 Rebooted the server.
 Switched to Rescue OS console and mounted the actual server disk:
 
-
-## Decisions Made
+### Decisions Made
 Why CPX22: CPX21 unavailable in hel1
 Why Echo server: lightweight, stateless, easy to scale
 Why Cloudflare Tunnel: no need for LB or public IP, simple DNS
 Why GitOps (Flux): declarative mgmt, reproducibility
-
-## Secrets & GitOps Consideration
-The assessment requires following GitOps principles:
-
-“Use GitOps Paradigm: do not create resources manually on the Kubernetes cluster.”
-
-However, it also states:
-
-“You may store secrets in plaintext for this assessment.
-Secret encryption is NOT required and would exceed the scope.
-Using external secret managers is not required.”
-
-Because this repository is public, storing sensitive data such as:
-
-Cloudflare API Token
-Cloudflare Account ID
-
-inside Git (even base64) would be unsafe.
-For this reason:
-✔ I installed the Cloudflare Tunnel Ingress Controller manually using Helm,because it requires sensitive values (cloudflare.apiToken, accountId) that must not be pushed to Git.
