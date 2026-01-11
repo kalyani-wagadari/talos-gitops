@@ -22,16 +22,26 @@ Key outcomes:
 
 ## 2. Repository Layout
 
+
 talos-gitops/
-├─ clusters/
-│  └─ production/
-│     ├─ kalyani-demo/
-│     │  ├─ namespace.yaml
-│     │  ├─ deployment.yaml
-│     │  ├─ service.yaml
-│     │  ├─ ingress.yaml
-│     │  └─ kustomization.yaml
-│     └─ kalyani-demo-kustomization.yaml
+└── clusters/
+    └── production/
+        ├── kalyani-demo/
+        │   ├── namespace.yaml
+        │   ├── deployment.yaml
+        │   ├── service.yaml
+        │   ├── ingress.yaml
+        │   └── kustomization.yaml
+        │
+        ├── Terraform/
+        │   ├── .terraform.lock.hcl
+        │   ├── main.tf
+        │   ├── outputs.tf
+        │   ├── terraform.tfvars
+        │   ├── variables.tf
+        │   └── versions.tf
+        │
+        └── kalyani-demo-kustomization.yaml
 
 - `clusters/production/kalyani-demo/` → App manifests and a local `kustomization.yaml`
 - `clusters/production/kalyani-demo-kustomization.yaml` → Flux Kustomization CR pointing to the demo folder
