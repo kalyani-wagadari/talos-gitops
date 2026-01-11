@@ -90,15 +90,15 @@ export TALOSCONFIG= ~/sfs-assessment/terraform/talosconfig
 ```
 ### 3.3 Verification
 
- Talos cluster members (etcd on control planes)
- talosctl get member
+- Talos cluster members (etcd on control planes)
+- talosctl get member
 <img width="1550" height="245" alt="image" src="https://github.com/user-attachments/assets/e5b57db9-d163-4e6b-a803-62bbe86a6a52" />
 
  Kubernetes nodes
- kubectl get nodes -o wide
+- kubectl get nodes -o wide
  <img width="1550" height="175" alt="image" src="https://github.com/user-attachments/assets/203517ae-3142-4c66-b717-393c94f9494a" />
 
- kubectl get pods -A
+- kubectl get pods -A
 <img width="1361" height="818" alt="image" src="https://github.com/user-attachments/assets/989b087a-efeb-4892-b423-f8b163bac611" />
 
 ## 4. GitOps Bootstrap (FluxCD)
@@ -114,8 +114,8 @@ flux bootstrap github \
 
 Verification:
 
-flux get kustomizations -A
-kubectl -n flux-system get pods
+- flux get kustomizations -A
+- kubectl -n flux-system get pods
 <img width="1183" height="221" alt="image" src="https://github.com/user-attachments/assets/4f4ee309-0d00-47eb-96be-97c2ae88092d" />
 
 
